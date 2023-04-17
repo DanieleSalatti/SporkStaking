@@ -1,21 +1,39 @@
-import { NextjsSite, Queue, RDS, StackContext } from "sst/constructs";
+import { Cron, NextjsSite, Queue, RDS, StackContext } from "sst/constructs";
 
 export function StakingStack({ stack }: StackContext) {
   const DATABASE = "CounterDB";
 
+  /*
+   * RDS Cluster
+   */
   const cluster = new RDS(stack, "Cluster", {
     engine: "mysql5.7",
     defaultDatabaseName: DATABASE,
     migrations: "services/migrations",
   });
 
+  /*
+   * SQS Queue
+   * This is where we'll receive messages from the frontend.
+   * Currently messages are received when:
+   * - member stakes amount
+   * - member unstakes amount
+   */
   const inboundQueue = new Queue(stack, "Queue", {
+    /*
+     * This is the function that will process inbound messages,
+     * keeping track of the member's balance and active state
+     * in the database.
+     */
     consumer: "packages/functions/src/inboundConsumer.handler",
   });
 
+  /*
+   * Next.js Site
+   */
   const site = new NextjsSite(stack, "Site", {
     path: "packages/frontend",
-    // customDomain: "custom-domain.com",
+    customDomain: stack.stage === "prod" ? "custom-domain.com" : undefined,
     edge: true,
     environment: {
       DB_HOST: cluster.clusterIdentifier,
@@ -23,6 +41,20 @@ export function StakingStack({ stack }: StackContext) {
     },
   });
 
+  /*
+   * Cron Job
+   * This is where we'll run the bookkeeping function
+   * that will calculate the member's balance and update
+   * the database.
+   */
+  new Cron(stack, "Cron", {
+    schedule: "rate(1 day)",
+    job: "packages/functions/src/bookkeeping.main",
+  });
+
+  /*
+   * Permissions
+   */
   site.attachPermissions([cluster]);
 
   stack.addOutputs({
