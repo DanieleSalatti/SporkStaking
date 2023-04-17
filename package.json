@@ -1,0 +1,35 @@
+{
+  "name": "SporkStakingSST",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "sst dev",
+    "frontend": "pnpm --filter frontend dev",
+    "db:push": "pnpm --filter frontend db:push",
+    "build": "sst build",
+    "deploy": "sst deploy",
+    "remove": "sst remove",
+    "console": "sst console",
+    "typecheck": "tsc --noEmit",
+    "account": "pnpm --filter hardhat account",
+    "chain": "pnpm --filter hardhat chain",
+    "hardhat:deploy": "pnpm --filter hardhat deploy",
+    "generate": "pnpm --filter hardhat generate",
+    "verify": "pnpm --filter hardhat verify",
+    "hardhat:test": "pnpm --filter hardhat test",
+    "db:nm": "touch services/migrations/$(date -u +'%Y-%m-%dT%H-%M-%S').ts"
+  },
+  "devDependencies": {
+    "@tsconfig/node16": "^1.0.3",
+    "@types/node": "^18.15.11",
+    "aws-cdk-lib": "2.72.1",
+    "constructs": "10.1.156",
+    "kysely": "^0.24.2",
+    "sst": "^2.5.2",
+    "typescript": "^5.0.4"
+  },
+  "workspaces": [
+    "packages/*"
+  ]
+}
