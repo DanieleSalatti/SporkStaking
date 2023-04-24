@@ -12,6 +12,8 @@
     "sst": "^2.5.2"
   },
   "dependencies": {
-    "aws-sdk": "^2.1359.0"
+    "aws-sdk": "^2.1359.0",
+    "ethers": "^5.7.2",
+    "kysely-data-api": "^0.2.0"
   }
 }

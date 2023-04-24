@@ -44,6 +44,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.41.0
       '@uniswap/sdk': ^3.0.3
       autoprefixer: ^10.4.12
+      aws-sdk: ^2.1359.0
       daisyui: ^2.33.0
       eslint: ^8.26.0
       eslint-config-next: ^13.0.0
@@ -77,6 +78,7 @@ importers:
       '@prisma/client': 4.12.0_prisma@4.12.0
       '@rainbow-me/rainbowkit': 0.7.4_uu2y6qu2ntizkfh5oa6ofjz3du
       '@uniswap/sdk': 3.0.3_zrtics2e5rkrh6z22sgcm2anci
+      aws-sdk: 2.1359.0
       daisyui: 2.51.5_j7yt3jd32cwenjqavrrga47yr4
       ethers: 5.7.2
       framer-motion: 7.10.3_biqbaboplfbrettd7655fr4n2y
@@ -116,9 +118,13 @@ importers:
       '@types/aws-lambda': ^8.10.114
       '@types/node': ^18.15.11
       aws-sdk: ^2.1359.0
+      ethers: ^5.7.2
+      kysely-data-api: ^0.2.0
       sst: ^2.5.2
     dependencies:
       aws-sdk: 2.1359.0
+      ethers: 5.7.2
+      kysely-data-api: 0.2.0
     devDependencies:
       '@types/aws-lambda': 8.10.114
       '@types/node': 18.15.11
@@ -8704,6 +8710,13 @@ packages:
       micromatch: 4.0.5
       minimist: 1.2.8
     dev: true
+
+  /kysely-data-api/0.2.0:
+    resolution: {integrity: sha512-Jkuqoxs8XInYeUnKDFKraA1lmuW8flY5hse59EmFIKbWDv0diRjkthCrc21egEwpfqVmLYq0/zj+SWWrH8a0hw==}
+    peerDependencies:
+      '@aws-sdk/client-rds-data': 3.x
+      kysely: 0.x
+    dev: false
 
   /kysely-data-api/0.2.0_nohkmm76eofrr2kowxkgm2f4se:
     resolution: {integrity: sha512-Jkuqoxs8XInYeUnKDFKraA1lmuW8flY5hse59EmFIKbWDv0diRjkthCrc21egEwpfqVmLYq0/zj+SWWrH8a0hw==}

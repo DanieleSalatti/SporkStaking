@@ -25,7 +25,22 @@ export function StakingStack({ stack }: StackContext) {
      * keeping track of the member's balance and active state
      * in the database.
      */
-    consumer: "packages/functions/src/inboundConsumer.handler",
+    consumer: {
+      function: {
+        handler: "packages/functions/src/inboundConsumer.handler",
+        permissions: [cluster],
+        environment: {
+          POLYGON_RPC_URL: "https://rpc-mainnet.maticvigil.com",
+          STAKING_CONTRACT_ADDRESS:
+            "0xAC6efAd5443280b1E5D93F5bfe076a7Ce6e448De",
+        },
+      },
+      cdk: {
+        eventSource: {
+          batchSize: 5,
+        },
+      },
+    },
   });
 
   /*
@@ -33,7 +48,7 @@ export function StakingStack({ stack }: StackContext) {
    */
   const site = new NextjsSite(stack, "Site", {
     path: "packages/frontend",
-    customDomain: stack.stage === "prod" ? "custom-domain.com" : undefined,
+    // customDomain: stack.stage === "prod" ? "custom-domain.com" : undefined,
     edge: true,
     environment: {
       DB_HOST: cluster.clusterIdentifier,
