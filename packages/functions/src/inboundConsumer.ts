@@ -1,28 +1,37 @@
 import { SQSEvent } from "aws-lambda";
 import { RDSDataService } from "aws-sdk";
 import { BigNumber, ethers } from "ethers";
-import { formatEther, parseEther } from "ethers/lib/utils";
+import { formatEther } from "ethers/lib/utils";
 import { Kysely } from "kysely";
 import { DataApiDialect } from "kysely-data-api";
 import { RDS } from "sst/node/rds";
-import SporkStakerABI from "./abis/SporkStaker.json" assert { type: "json" };
+
+const erc20abi = ["function balanceOf(address owner) view returns (uint256)"];
+
+const stakedSporkAddress = "0x3e356BC667DA320824b9AF5eC5B5ce3edaEbF754";
+
 interface Database {
   member: {
-    id: number;
+    id?: number;
     first_name: string;
     last_name: string;
     wallet: string;
     country: string;
     email: string;
     amount: string;
-    created_at: Date;
+    created_at?: Date;
     is_active: boolean;
+  };
+  staked_at: {
+    wallet: string;
+    total_amount: string;
+    created_at?: Date;
   };
 }
 
 const db = new Kysely<Database>({
   dialect: new DataApiDialect({
-    mode: "postgres",
+    mode: "mysql",
     driver: {
       database: RDS.Cluster.defaultDatabaseName,
       secretArn: RDS.Cluster.secretArn,
@@ -41,59 +50,51 @@ export async function main(event: SQSEvent) {
     const message = JSON.parse(record.body);
     console.log("Processing message", message);
 
-    // TODO: validate data with blockchain here
     const provider = new ethers.providers.JsonRpcProvider(
       process.env.POLYGON_RPC_URL
     );
-    const contract = new ethers.Contract(
-      process.env.STAKING_CONTRACT_ADDRESS!,
-      SporkStakerABI,
+
+    const stakedSporkContract = new ethers.Contract(
+      stakedSporkAddress,
+      erc20abi,
       provider
     );
 
-    const events = await contract.queryFilter(
-      "*",
-      record.blockNumber - 1,
-      record.blockNumber + 1
+    const newamount: BigNumber = await stakedSporkContract.balanceOf(
+      record.wallet
     );
-
-    const event = events.find(
-      (event) =>
-        event.args?.sender.toString().toLowerCase() ===
-          record.wallet.toString().toLowerCase() &&
-        event.args?.amount.toString().toLowerCase() ===
-          record.amount.toString().toLowerCase()
-    );
-
-    if (!event) {
-      console.log("Error while processing message", message);
-      throw new Error("Invalid message: " + message.id);
-    }
 
     const member = await db
       .selectFrom("member")
       .selectAll()
       .where("wallet", "=", record.wallet)
-      .executeTakeFirstOrThrow();
+      .executeTakeFirst();
 
-    const currentamount: BigNumber = parseEther(member.amount);
+    await db.insertInto("staked_at").values({
+      wallet: record.wallet,
+      total_amount: formatEther(newamount),
+    });
 
-    let newamount: BigNumber = BigNumber.from(0);
-
-    if (message.amount > 0) {
-      newamount = currentamount.add(parseEther(message.amount));
-    } else {
-      newamount = currentamount.sub(parseEther(message.amount));
-    }
-
-    if (newamount.lt(0)) {
-      throw new Error("Member balance is negative");
+    if (!member) {
+      await db
+        .insertInto("member")
+        .values({
+          first_name: message.first_name,
+          last_name: message.last_name,
+          wallet: message.wallet,
+          country: message.country,
+          email: message.email,
+          amount: formatEther(newamount),
+          is_active: true,
+        })
+        .execute();
+      return {};
     }
 
     if (newamount.eq(0)) {
       await db
         .updateTable("member")
-        .set({ is_active: false, amount: formatEther(newamount.toString()) })
+        .set({ is_active: false, amount: formatEther(newamount) })
         .where("wallet", "=", record.wallet)
         .execute();
       return {};
@@ -101,7 +102,7 @@ export async function main(event: SQSEvent) {
 
     await db
       .updateTable("member")
-      .set({ is_active: true, amount: formatEther(newamount.toString()) })
+      .set({ is_active: true, amount: formatEther(newamount) })
       .where("wallet", "=", record.wallet)
       .execute();
     return {};
