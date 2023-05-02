@@ -18,7 +18,7 @@ async function createMember(req: NextApiRequest, res: NextApiResponse) {
     await sqs
       .sendMessage({
         // Get the queue url from the environment variable
-        QueueUrl: process.env.INBOUND_QUEUE,
+        QueueUrl: process.env.INBOUND_QUEUE!,
         MessageBody: JSON.stringify({
           first_name: body.first_name,
           last_name: body.last_name,

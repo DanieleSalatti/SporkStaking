@@ -39,7 +39,7 @@ const db = new Kysely<Database>({
   }),
 });
 
-export async function main() {
+export async function handler() {
   console.log("Messages received!");
 
   // Select only the latest row for each wallet that is at least 24 hours old

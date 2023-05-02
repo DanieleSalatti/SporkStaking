@@ -29,10 +29,10 @@ export function StakingStack({ stack }: StackContext) {
       function: {
         handler: "packages/functions/src/inboundConsumer.handler",
         permissions: [cluster],
+        bind: [cluster],
         environment: {
-          POLYGON_RPC_URL: "https://rpc-mainnet.maticvigil.com",
-          STAKING_CONTRACT_ADDRESS:
-            "0xAC6efAd5443280b1E5D93F5bfe076a7Ce6e448De",
+          POLYGON_ALCHEMY_KEY: "lQLpodoMvP1mGHFY01myNQ6JiXklUNIx",
+          SSPORK_ADDRESS: "0x3e356BC667DA320824b9AF5eC5B5ce3edaEbF754",
         },
       },
       cdk: {
@@ -49,7 +49,8 @@ export function StakingStack({ stack }: StackContext) {
   const site = new NextjsSite(stack, "Site", {
     path: "packages/frontend",
     // customDomain: stack.stage === "prod" ? "custom-domain.com" : undefined,
-    edge: true,
+    bind: [inboundQueue],
+    edge: false,
     environment: {
       DB_HOST: cluster.clusterIdentifier,
       INBOUND_QUEUE: inboundQueue.queueUrl,
@@ -64,13 +65,19 @@ export function StakingStack({ stack }: StackContext) {
    */
   new Cron(stack, "Cron", {
     schedule: "rate(1 day)",
-    job: "packages/functions/src/bookkeeping.main",
+    job: {
+      function: {
+        handler: "packages/functions/src/bookkeeping.handler",
+        permissions: [cluster],
+        bind: [cluster],
+      },
+    },
   });
 
   /*
    * Permissions
    */
-  site.attachPermissions([cluster]);
+  site.attachPermissions([cluster, inboundQueue]);
 
   stack.addOutputs({
     URL: site.url,
