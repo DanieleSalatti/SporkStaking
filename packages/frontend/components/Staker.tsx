@@ -204,6 +204,10 @@ export const Staker: FC<IStakerProps> = props => {
       Notiflix.Notify.success(`Transaction Successful!:${JSON.stringify(unstakingTransactionData)}`);
       setSporkToStake(BigNumber.from(0));
       setSporkToUnStake(BigNumber.from(0));
+      stakingTransactionData?.wait(2).then(receipt => {
+        console.log("receipt", receipt);
+        handleSubmit(receipt.blockNumber);
+      });
     }
   }, [unstakingError, unstakingSuccess, unstakingTransactionData, unstakingErrorMsg?.message]);
 
