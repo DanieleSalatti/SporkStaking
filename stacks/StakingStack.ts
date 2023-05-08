@@ -1,7 +1,7 @@
 import { Cron, NextjsSite, Queue, RDS, StackContext } from "sst/constructs";
 
 export function StakingStack({ stack }: StackContext) {
-  const DATABASE = "CounterDB";
+  const DATABASE = "SporkStaking";
 
   /*
    * RDS Cluster
@@ -10,6 +10,11 @@ export function StakingStack({ stack }: StackContext) {
     engine: "mysql5.7",
     defaultDatabaseName: DATABASE,
     migrations: "services/migrations",
+    scaling: {
+      autoPause: stack.stage !== "prod",
+      minCapacity: stack.stage === "prod" ? "ACU_2" : "ACU_1",
+      maxCapacity: stack.stage === "prod" ? "ACU_16" : "ACU_1",
+    },
   });
 
   /*
@@ -28,7 +33,6 @@ export function StakingStack({ stack }: StackContext) {
     consumer: {
       function: {
         handler: "packages/functions/src/inboundConsumer.handler",
-        permissions: [cluster],
         bind: [cluster],
         environment: {
           POLYGON_ALCHEMY_KEY: "lQLpodoMvP1mGHFY01myNQ6JiXklUNIx",
@@ -49,7 +53,7 @@ export function StakingStack({ stack }: StackContext) {
   const site = new NextjsSite(stack, "Site", {
     path: "packages/frontend",
     // customDomain: stack.stage === "prod" ? "custom-domain.com" : undefined,
-    bind: [inboundQueue],
+    bind: [inboundQueue, cluster],
     edge: false,
     environment: {
       DB_HOST: cluster.clusterIdentifier,
@@ -64,7 +68,7 @@ export function StakingStack({ stack }: StackContext) {
    * the database.
    */
   new Cron(stack, "Cron", {
-    schedule: "rate(1 day)",
+    schedule: stack.stage === "prod" ? "rate(1 day)" : "rate(1 hour)",
     job: {
       function: {
         handler: "packages/functions/src/bookkeeping.handler",
@@ -73,11 +77,6 @@ export function StakingStack({ stack }: StackContext) {
       },
     },
   });
-
-  /*
-   * Permissions
-   */
-  site.attachPermissions([cluster, inboundQueue]);
 
   stack.addOutputs({
     URL: site.url,

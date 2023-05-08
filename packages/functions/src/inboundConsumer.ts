@@ -1,5 +1,5 @@
+import { RDSData } from "@aws-sdk/client-rds-data";
 import { SQSEvent } from "aws-lambda";
-import { RDSDataService } from "aws-sdk";
 import { ethers } from "ethers";
 import { formatEther } from "ethers/lib/utils";
 import { Kysely } from "kysely";
@@ -21,7 +21,7 @@ interface Database {
     created_at?: Date;
     is_active: boolean;
   };
-  staked_at: {
+  stake_log: {
     wallet: string;
     total_amount: string;
     created_at?: Date;
@@ -35,7 +35,7 @@ const db = new Kysely<Database>({
       database: RDS.Cluster.defaultDatabaseName,
       secretArn: RDS.Cluster.secretArn,
       resourceArn: RDS.Cluster.clusterArn,
-      client: new RDSDataService(),
+      client: new RDSData({}),
     },
   }),
 });
@@ -88,19 +88,21 @@ export async function handler(event: SQSEvent) {
       .where("wallet", "=", message.wallet)
       .executeTakeFirst();
 
-    console.log("📝 Inserting into staked_at");
+    console.log("📝 Inserting into stake_log");
 
-    await db
-      .insertInto("staked_at")
+    const newStakeLog = await db
+      .insertInto("stake_log")
       .values({
         wallet: message.wallet,
         total_amount: formatEther(newamount),
       })
       .execute();
 
+    console.log("📝 Inserted into stake_log", newStakeLog.length);
+
     if (!member) {
       console.log("📝 Member does not exist, creating new one");
-      await db
+      const newMember = await db
         .insertInto("member")
         .values({
           first_name: message.first_name,
@@ -111,8 +113,8 @@ export async function handler(event: SQSEvent) {
           amount: formatEther(newamount),
           is_active: true,
         })
-        .execute();
-      console.log("✅ Done!");
+        .executeTakeFirstOrThrow();
+      console.log("✅ Done!", newMember.insertId);
       return {};
     }
 
@@ -120,23 +122,23 @@ export async function handler(event: SQSEvent) {
       console.log(
         "📝 Member has unstaked completely, setting is_active to false"
       );
-      await db
+      const updatedInactiveMember = await db
         .updateTable("member")
         .set({ is_active: false, amount: formatEther(newamount) })
         .where("wallet", "=", message.wallet)
-        .execute();
-      console.log("✅ Done!");
+        .executeTakeFirstOrThrow();
+      console.log("✅ Done!", updatedInactiveMember.numUpdatedRows);
       return {};
     }
 
     console.log("📝 Updating member");
 
-    await db
+    const updatedMember = await db
       .updateTable("member")
       .set({ is_active: true, amount: formatEther(newamount) })
       .where("wallet", "=", message.wallet)
-      .execute();
-    console.log("✅ Done!");
+      .executeTakeFirstOrThrow();
+    console.log("✅ Done!", updatedMember.numUpdatedRows);
     return {};
   }
   console.log("✅ Done processing messages!");

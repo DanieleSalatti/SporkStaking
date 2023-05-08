@@ -12,9 +12,11 @@
     "sst": "^2.5.2"
   },
   "dependencies": {
+    "@aws-sdk/client-rds-data": "^3.328.0",
     "alchemy-sdk": "^2.8.2",
     "aws-sdk": "^2.1359.0",
     "ethers": "^5.7.2",
+    "kysely": "^0.24.2",
     "kysely-data-api": "^0.2.0",
     "node-fetch": "^3.3.1"
   }

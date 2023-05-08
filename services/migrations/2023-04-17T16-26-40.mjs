@@ -1,6 +1,9 @@
-import { Kysely, sql } from "kysely";
+import { sql } from "kysely";
 
-export async function up(db: Kysely<any>): Promise<void> {
+/**
+ * @param db {Kysely<any>}
+ */
+export async function up(db) {
   await db.schema
     .createTable("member")
     .addColumn("id", "integer", (col) => col.autoIncrement().primaryKey())
@@ -35,8 +38,9 @@ export async function up(db: Kysely<any>): Promise<void> {
     .execute();
 }
 
-export async function down(db: Kysely<any>): Promise<void> {
+/**
+ * @param db {Kysely<any>}
+ */
+export async function down(db) {
   await db.schema.dropTable("member").execute();
 }
-
-module.exports = { up, down };

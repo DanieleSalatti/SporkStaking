@@ -274,7 +274,7 @@ export const Staker: FC<IStakerProps> = props => {
   void memberCheck();
 
   return (
-    <div className="flex flex-col items-center justify-center w-full h-full p-4 space-y-4 text-center">
+    <div className="flex flex-col items-center justify-center w-full h-full p-4 space-y-4 text-center text-slate-200">
       <div className="flex flex-col items-center">
         {/* Read SPORK and sSPORK balances */}
         <div className="stat flex flex-row space-x-3 justify-center">

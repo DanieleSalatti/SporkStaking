@@ -1,15 +1,16 @@
-import { Kysely, sql } from "kysely";
+import { sql } from "kysely";
 
-export async function up(db: Kysely<any>): Promise<void> {
+/**
+ * @param db {Kysely<any>}
+ */
+export async function up(db) {
   await db.schema
     .createTable("stake_log")
     .addColumn("wallet", "varchar(50)", (col) => col.notNull())
     .addColumn("total_amount", "varchar(255)", (col) =>
       col.notNull().defaultTo(0)
     )
-    .addColumn("created_at", "datetime", (col) =>
-      col.defaultTo(sql`now()`).notNull()
-    )
+    .addColumn("created_at", "datetime", (col) => col.defaultTo(sql`now()`))
     .execute();
 
   await db.schema
@@ -25,8 +26,9 @@ export async function up(db: Kysely<any>): Promise<void> {
     .execute();
 }
 
-export async function down(db: Kysely<any>): Promise<void> {
+/**
+ * @param db {Kysely<any>}
+ */
+export async function down(db) {
   await db.schema.dropTable("stake_log").execute();
 }
-
-module.exports = { up, down };
