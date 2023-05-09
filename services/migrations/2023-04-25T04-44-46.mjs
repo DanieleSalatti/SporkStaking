@@ -8,11 +8,11 @@ export async function up(db) {
     .createTable("running_totals")
     .addColumn("wallet", "varchar(50)", (col) => col.notNull())
     .addColumn("amount", "varchar(255)", (col) => col.notNull().defaultTo(0))
+    .addColumn("percentage_share", "decimal(10, 7)", (col) =>
+      col.notNull().defaultTo(0)
+    )
     .addColumn("updated_at", "datetime", (col) =>
       col.defaultTo(sql`now()`).notNull()
-    )
-    .addColumn("percentage_share", "bigint", (col) =>
-      col.notNull().defaultTo(0)
     )
     .execute();
 

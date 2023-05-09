@@ -11,43 +11,149 @@ type Member = {
   percentage_share: string;
 };
 
-const columnHelper = createColumnHelper<Member>();
-
-const columns = [
-  columnHelper.accessor("first_name", {
-    cell: info => info.getValue(),
-    header: () => <span>First Name</span>,
-  }),
-  columnHelper.accessor("last_name", {
-    cell: info => <i>{info.getValue()}</i>,
-    header: () => <span>Last Name</span>,
-  }),
-  columnHelper.accessor("email", {
-    cell: info => info.renderValue(),
-    header: () => <span>Email</span>,
-  }),
-  columnHelper.accessor("country", {
-    cell: info => <i>{info.getValue()}</i>,
-    header: () => <span>Country</span>,
-  }),
-  columnHelper.accessor("wallet", {
-    header: () => <span>Wallet</span>,
-  }),
-  columnHelper.accessor("amount", {
-    header: () => <span>Amount</span>,
-  }),
-  columnHelper.accessor("percentage_share", {
-    header: () => <span>Percentage Share</span>,
-  }),
-];
-
 export interface MemberTableProps {
   members?: Member[];
+  setOrderByField: (fieldName: string) => void;
+  setOrderByDirection: (direction: string) => void;
+  orderByField: string;
+  orderByDirection: string;
 }
 
 export const MemberTable: FC<MemberTableProps> = props => {
-  console.log("DASA ", props.members);
+  const { setOrderByDirection, setOrderByField, orderByField, orderByDirection } = props;
   const [data, setData] = useState<Member[]>([]);
+
+  const ArrowSortIcon: FC<{ isSorted: boolean; isSortedDesc: boolean; fieldName: string }> = props => {
+    return props.isSorted ? (
+      props.isSortedDesc ? (
+        <a
+          className="text-slate-200"
+          href="#"
+          onClick={() => {
+            setOrderByField(props.fieldName);
+            setOrderByDirection("asc");
+          }}
+        >
+          ⬇
+        </a>
+      ) : (
+        <a
+          className="text-slate-200"
+          href="#"
+          onClick={() => {
+            setOrderByField(props.fieldName);
+            setOrderByDirection("desc");
+          }}
+        >
+          ⬆
+        </a>
+      )
+    ) : (
+      <a
+        className="opacity-20 text-slate-200"
+        href="#"
+        onClick={() => {
+          setOrderByField(props.fieldName);
+          setOrderByDirection("desc");
+        }}
+      >
+        ⬇
+      </a>
+    );
+  };
+
+  const columnHelper = createColumnHelper<Member>();
+
+  const columns = [
+    columnHelper.accessor("first_name", {
+      cell: info => info.getValue(),
+      header: () => (
+        <span>
+          First Name{" "}
+          <ArrowSortIcon
+            isSorted={orderByField === "first_name"}
+            isSortedDesc={orderByDirection === "desc"}
+            fieldName={"first_name"}
+          />
+        </span>
+      ),
+    }),
+    columnHelper.accessor("last_name", {
+      cell: info => <i>{info.getValue()}</i>,
+      header: () => (
+        <span>
+          Last Name{" "}
+          <ArrowSortIcon
+            isSorted={orderByField === "last_name"}
+            isSortedDesc={orderByDirection === "desc"}
+            fieldName={"last_name"}
+          />
+        </span>
+      ),
+    }),
+    columnHelper.accessor("email", {
+      cell: info => info.renderValue(),
+      header: () => (
+        <span>
+          Email{" "}
+          <ArrowSortIcon
+            isSorted={orderByField === "email"}
+            isSortedDesc={orderByDirection === "desc"}
+            fieldName={"email"}
+          />
+        </span>
+      ),
+    }),
+    columnHelper.accessor("country", {
+      cell: info => <i>{info.getValue()}</i>,
+      header: () => (
+        <span>
+          Country{" "}
+          <ArrowSortIcon
+            isSorted={orderByField === "country"}
+            isSortedDesc={orderByDirection === "desc"}
+            fieldName={"country"}
+          />
+        </span>
+      ),
+    }),
+    columnHelper.accessor("wallet", {
+      header: () => (
+        <span>
+          Wallet{" "}
+          <ArrowSortIcon
+            isSorted={orderByField === "wallet"}
+            isSortedDesc={orderByDirection === "desc"}
+            fieldName={"wallet"}
+          />
+        </span>
+      ),
+    }),
+    columnHelper.accessor("amount", {
+      header: () => (
+        <span>
+          Amount{" "}
+          <ArrowSortIcon
+            isSorted={orderByField === "amount"}
+            isSortedDesc={orderByDirection === "desc"}
+            fieldName={"amount"}
+          />
+        </span>
+      ),
+    }),
+    columnHelper.accessor("percentage_share", {
+      header: () => (
+        <span>
+          Percentage Share{" "}
+          <ArrowSortIcon
+            isSorted={orderByField === "percentage_share"}
+            isSortedDesc={orderByDirection === "desc"}
+            fieldName={"percentage_share"}
+          />
+        </span>
+      ),
+    }),
+  ];
 
   useEffect(() => {
     setData(props.members ? [...props.members] : []);

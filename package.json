@@ -18,7 +18,7 @@
     "generate": "pnpm --filter hardhat generate",
     "verify": "pnpm --filter hardhat verify",
     "hardhat:test": "pnpm --filter hardhat test",
-    "db:nm": "touch services/migrations/$(date -u +'%Y-%m-%dT%H-%M-%S').ts"
+    "db:nm": "touch services/migrations/$(date -u +'%Y-%m-%dT%H-%M-%S').mjs"
   },
   "devDependencies": {
     "@tsconfig/node16": "^1.0.3",
