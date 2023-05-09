@@ -4,29 +4,11 @@ import { ethers } from "ethers";
 import { formatEther } from "ethers/lib/utils";
 import { Kysely } from "kysely";
 import { DataApiDialect } from "kysely-data-api";
-import fetch from "node-fetch";
+import fetch, { RequestInit } from "node-fetch";
 import { RDS } from "sst/node/rds";
+import { Database } from "./common";
 
 // const erc20abi = ["function balanceOf(address owner) view returns (uint256)"];
-
-interface Database {
-  member: {
-    id?: number;
-    first_name: string;
-    last_name: string;
-    wallet: string;
-    country: string;
-    email: string;
-    amount: string;
-    created_at?: Date;
-    is_active: boolean;
-  };
-  stake_log: {
-    wallet: string;
-    total_amount: string;
-    created_at?: Date;
-  };
-}
 
 const db = new Kysely<Database>({
   dialect: new DataApiDialect({
@@ -63,14 +45,16 @@ export async function handler(event: SQSEvent) {
       id: 42,
     });
 
-    var requestOptions = {
+    var requestOptions: RequestInit = {
       method: "POST",
       body: raw,
       redirect: "follow",
     };
 
     // Make the request and print the formatted response:
-    const response = await (await fetch(fetchURL, requestOptions)).json();
+    const response = (await (
+      await fetch(fetchURL, requestOptions)
+    ).json()) as any;
 
     console.log("💶 Getting balance for member", message.wallet);
 
