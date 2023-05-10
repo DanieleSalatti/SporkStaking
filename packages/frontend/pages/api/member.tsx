@@ -4,31 +4,7 @@ import { Kysely } from "kysely";
 import { DataApiDialect } from "kysely-data-api";
 import { NextApiRequest, NextApiResponse } from "next";
 import { RDS } from "sst/node/rds";
-
-interface Database {
-  member: {
-    id?: number;
-    first_name: string;
-    last_name: string;
-    wallet: string;
-    country: string;
-    email: string;
-    amount: string;
-    created_at?: Date;
-    is_active: boolean;
-  };
-  staked_at: {
-    wallet: string;
-    total_amount: string;
-    created_at?: Date;
-  };
-  running_totals: {
-    wallet: string;
-    amount: string;
-    percentage_share: number;
-    updated_at?: Date;
-  };
-}
+import Database from "~~/common/interfaces";
 
 const db = new Kysely<Database>({
   dialect: new DataApiDialect({

@@ -1,4 +1,5 @@
 import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
+import Link from "next/link";
 import { FC, useEffect, useState } from "react";
 
 type Member = {
@@ -118,6 +119,7 @@ export const MemberTable: FC<MemberTableProps> = props => {
       ),
     }),
     columnHelper.accessor("wallet", {
+      cell: info => <Link href={`dashboard/member/${info.getValue()}`}>{info.getValue()}</Link>,
       header: () => (
         <span>
           Wallet{" "}

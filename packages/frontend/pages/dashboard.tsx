@@ -12,8 +12,6 @@ const tempAutoConnectConfig: TAutoConnect = {
   autoConnect: true,
 };
 
-const fetcher = (url: RequestInfo | URL) => fetch(url).then(r => r.json());
-
 const Dashboard: NextPage = () => {
   useAutoConnect(tempAutoConnectConfig);
   const [filterWallet, setFilterWallet] = useState<string>("");

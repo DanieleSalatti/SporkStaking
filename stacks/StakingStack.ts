@@ -68,7 +68,7 @@ export function StakingStack({ stack }: StackContext) {
    * the database.
    */
   new Cron(stack, "Cron", {
-    schedule: stack.stage === "prod" ? "rate(1 day)" : "rate(5 minute)",
+    schedule: stack.stage === "prod" ? "rate(1 day)" : "rate(5 minutes)",
     job: {
       function: {
         handler: "packages/functions/src/bookkeeping.handler",
