@@ -48,6 +48,7 @@ importers:
       autoprefixer: ^10.4.12
       aws-sdk: ^2.1359.0
       daisyui: ^2.33.0
+      date-fns: ^2.30.0
       eslint: ^8.26.0
       eslint-config-next: ^13.0.0
       eslint-config-prettier: ^8.5.0
@@ -66,6 +67,7 @@ importers:
       react-blockies: ^1.4.1
       react-copy-to-clipboard: ^5.1.0
       react-country-region-selector: ^3.6.1
+      react-date-range: ^1.4.0
       react-dom: ^18.2.0
       react-icons: ^4.6.0
       react-social-icons: ^5.15.0
@@ -88,6 +90,7 @@ importers:
       '@uniswap/sdk': 3.0.3_zrtics2e5rkrh6z22sgcm2anci
       aws-sdk: 2.1359.0
       daisyui: 2.51.5_j7yt3jd32cwenjqavrrga47yr4
+      date-fns: 2.30.0
       ethers: 5.7.2
       framer-motion: 7.10.3_biqbaboplfbrettd7655fr4n2y
       kysely: 0.24.2
@@ -100,6 +103,7 @@ importers:
       react-blockies: 1.4.1_react@18.2.0
       react-copy-to-clipboard: 5.1.0_react@18.2.0
       react-country-region-selector: 3.6.1_biqbaboplfbrettd7655fr4n2y
+      react-date-range: 1.4.0_kzhlcyde2l6xjiirkbg7jzhosa
       react-dom: 18.2.0_react@18.2.0
       react-icons: 4.8.0_react@18.2.0
       react-social-icons: 5.15.0_react@18.2.0
@@ -6366,6 +6370,13 @@ packages:
     engines: {node: '>= 12'}
     dev: false
 
+  /date-fns/2.30.0:
+    resolution: {integrity: sha512-fnULvOpxnC5/Vg3NCiWelDsLiUc9bRwAPs/+LfTLNvetFCtCTN+yQz15C/fs4AwX1R9K5GLtLfn8QW+dWisaAw==}
+    engines: {node: '>=0.11'}
+    dependencies:
+      '@babel/runtime': 7.21.0
+    dev: false
+
   /date-time/3.1.0:
     resolution: {integrity: sha512-uqCUKXE5q1PNBXjPqvwhwJf9SwMoAHBgWJ6DcrnS5o+W2JOiIILl0JEdVD8SGujrNS02GGxgwAg2PN2zONgtjg==}
     engines: {node: '>=6'}
@@ -10887,6 +10898,20 @@ packages:
       react-dom: 18.2.0_react@18.2.0
     dev: false
 
+  /react-date-range/1.4.0_kzhlcyde2l6xjiirkbg7jzhosa:
+    resolution: {integrity: sha512-+9t0HyClbCqw1IhYbpWecjsiaftCeRN5cdhsi9v06YdimwyMR2yYHWcgVn3URwtN/txhqKpEZB6UX1fHpvK76w==}
+    peerDependencies:
+      date-fns: 2.0.0-alpha.7 || >=2.0.0
+      react: ^0.14 || ^15.0.0-rc || >=15.0
+    dependencies:
+      classnames: 2.3.2
+      date-fns: 2.30.0
+      prop-types: 15.8.1
+      react: 18.2.0
+      react-list: 0.8.17_react@18.2.0
+      shallow-equal: 1.2.1
+    dev: false
+
   /react-dom/18.2.0_react@18.2.0:
     resolution: {integrity: sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==}
     peerDependencies:
@@ -10914,6 +10939,15 @@ packages:
 
   /react-lifecycles-compat/3.0.4:
     resolution: {integrity: sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==}
+    dev: false
+
+  /react-list/0.8.17_react@18.2.0:
+    resolution: {integrity: sha512-pgmzGi0G5uGrdHzMhgO7KR1wx5ZXVvI3SsJUmkblSAKtewIhMwbQiMuQiTE83ozo04BQJbe0r3WIWzSO0dR1xg==}
+    peerDependencies:
+      react: 0.14 || 15 - 18
+    dependencies:
+      prop-types: 15.8.1
+      react: 18.2.0
     dev: false
 
   /react-reconciler/0.29.0_react@18.2.0:
@@ -11540,6 +11574,10 @@ packages:
       charenc: 0.0.2
       crypt: 0.0.2
     dev: true
+
+  /shallow-equal/1.2.1:
+    resolution: {integrity: sha512-S4vJDjHHMBaiZuT9NPb616CSmLf618jawtv3sufLl6ivK8WocjAo58cXwbRV1cgqxH0Qbv+iUt6m05eqEa2IRA==}
+    dev: false
 
   /shebang-command/2.0.0:
     resolution: {integrity: sha512-kHxr2zZpYtdmrN1qDjrrX/Z1rR1kG8Dx+gkpK1G4eXmvXswmcE1hTWBWYUzlraYw1/yZp6YuDY77YtvbN0dmDA==}

@@ -26,7 +26,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 }
 
 async function getContractLog(req: NextApiRequest, res: NextApiResponse) {
-  let baseQuery = db.selectFrom("contract_running_total").selectAll().orderBy("created_at", "asc");
+  const query = req.query;
+  const { startDate, endDate } = query;
+
+  let baseQuery = db
+    .selectFrom("contract_running_total")
+    .selectAll()
+    .where("created_at", ">=", new Date(startDate! + "T00:00:00.000Z"))
+    .where("created_at", "<=", new Date(endDate! + "T23:59:59.999Z"))
+    .orderBy("created_at", "asc");
 
   const contract_running_total = await baseQuery.execute();
   console.log("DASA contract", contract_running_total);

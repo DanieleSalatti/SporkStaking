@@ -24,7 +24,7 @@ const Dashboard: NextPage = () => {
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [pageCount, setPageCount] = useState(0);
-  const [orderByField, setOrderByField] = useState("wallet");
+  const [orderByField, setOrderByField] = useState("last_name");
   const [orderByDirection, setOrderByDirection] = useState("asc");
 
   useEffect(() => {
