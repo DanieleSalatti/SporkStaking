@@ -28,7 +28,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 async function getMember(req: NextApiRequest, res: NextApiResponse) {
   const query = req.query;
   const { wallet, startDate, endDate } = query;
-  console.log("DASA query", query);
 
   if (!wallet) {
     return res.status(400).json({ message: "Missing wallet", success: false });
@@ -43,6 +42,6 @@ async function getMember(req: NextApiRequest, res: NextApiResponse) {
     .orderBy("stake_log.created_at", "asc");
 
   const stake_log = await baseQuery.execute();
-  console.log("DASA members", stake_log);
+  
   res.status(200).json({ success: true, stakeLog: stake_log, total: stake_log.length });
 }

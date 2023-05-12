@@ -32,7 +32,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
 async function createMember(req: NextApiRequest, res: NextApiResponse) {
   const body = req.body;
-  console.log("DASA body", body);
+
   try {
     await sqs
       .sendMessage({
@@ -62,8 +62,6 @@ async function createMember(req: NextApiRequest, res: NextApiResponse) {
 async function getMembers(req: NextApiRequest, res: NextApiResponse) {
   const query = req.query;
   const { page, limit, wallet, orderByField, orderByDirection } = query;
-
-  console.log("DASA query", query);
 
   let baseQuery = db
     .selectFrom("member")
@@ -98,6 +96,6 @@ async function getMembers(req: NextApiRequest, res: NextApiResponse) {
     .limit(Number(limit || 10))
     .offset(Number(page || 0) * Number(limit || 10))
     .execute();
-  console.log("DASA members", members);
+
   res.status(200).json({ success: true, members, total: totalMembers.member_count });
 }

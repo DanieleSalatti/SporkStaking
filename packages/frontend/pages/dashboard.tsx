@@ -37,7 +37,6 @@ const Dashboard: NextPage = () => {
     )
       .then(res => res.json())
       .then(data => {
-        console.log("DASA data", data);
         setData(data.members);
         setTotal(data.total);
         setPageCount(Math.ceil(data.total / pageSize));

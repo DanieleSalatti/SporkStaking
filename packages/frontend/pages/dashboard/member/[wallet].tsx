@@ -62,7 +62,6 @@ const MemberDetails: FC<MemberTableProps> = props => {
       }`)
       .then(res => res.json())
       .then(data => {
-        console.log("DASA data", data);
         setData(data.stakeLog);
         setTotal(data.total);
         setLoading(false);

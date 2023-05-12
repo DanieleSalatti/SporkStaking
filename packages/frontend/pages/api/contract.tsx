@@ -37,6 +37,6 @@ async function getContractLog(req: NextApiRequest, res: NextApiResponse) {
     .orderBy("created_at", "asc");
 
   const contract_running_total = await baseQuery.execute();
-  console.log("DASA contract", contract_running_total);
+
   res.status(200).json({ success: true, stakeLog: contract_running_total, total: contract_running_total.length });
 }
