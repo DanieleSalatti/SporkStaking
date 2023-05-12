@@ -31,8 +31,6 @@ export async function handler(event: SQSEvent) {
     const message = JSON.parse(record.body);
     console.log("💌 Processing message", message);
 
-    console.log("🔑 Creating provider", process.env.POLYGON_ALCHEMY_KEY);
-
     const fetchURL = `https://polygon-mainnet.g.alchemy.com/v2/${process.env.POLYGON_ALCHEMY_KEY}`;
 
     var raw = JSON.stringify({

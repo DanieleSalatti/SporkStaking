@@ -62,6 +62,7 @@ async function createMember(req: NextApiRequest, res: NextApiResponse) {
 async function getMembers(req: NextApiRequest, res: NextApiResponse) {
   const query = req.query;
   const { page, limit, wallet, orderByField, orderByDirection } = query;
+
   console.log("DASA query", query);
 
   let baseQuery = db
@@ -76,7 +77,7 @@ async function getMembers(req: NextApiRequest, res: NextApiResponse) {
       "running_totals.amount",
       "running_totals.percentage_share",
     ])
-    .where("is_active", "=", true);
+    .where("member.is_active", "=", true)
 
   if (wallet && wallet !== "") {
     baseQuery = baseQuery.where("member.wallet", "like", "%" + wallet + "%");

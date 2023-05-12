@@ -5,6 +5,9 @@ import Footer from "~~/components/Footer";
 import Header from "~~/components/Header";
 import { MemberTable } from "~~/components/MemberTable";
 import { TAutoConnect, useAutoConnect } from "~~/hooks/scaffold-eth/useAutoConnect";
+import { DateRangePicker } from 'react-date-range';
+import 'react-date-range/dist/styles.css'; // main style file
+import 'react-date-range/dist/theme/default.css'; // theme css file
 
 // todo: move this later scaffold config.  See TAutoConnect for comments on each prop
 const tempAutoConnectConfig: TAutoConnect = {

@@ -6,6 +6,9 @@ import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 import Footer from "~~/components/Footer";
 import Header from "~~/components/Header";
 import { TAutoConnect, useAutoConnect } from "~~/hooks/scaffold-eth/useAutoConnect";
+import { DateRangePicker } from "react-date-range";
+import "react-date-range/dist/styles.css"; // main style file
+import "react-date-range/dist/theme/default.css"; // theme css file
 
 // todo: move this later scaffold config.  See TAutoConnect for comments on each prop
 const tempAutoConnectConfig: TAutoConnect = {
@@ -36,12 +39,27 @@ const MemberDetails: FC<MemberTableProps> = props => {
   const [loading, setLoading] = useState(false);
   const [total, setTotal] = useState(0);
   const [error, setError] = useState(null);
+  const [showCalendar, setShowCalendar] = useState(false);
+
+  const handleSelect = (ranges: any) => {
+    console.log(ranges);
+    setSelectionRange(ranges.selection);
+    setShowCalendar(false);
+  };
+
+  const [selectionRange, setSelectionRange] = useState({
+    startDate: new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000), // 30 days ago
+    endDate: new Date(),
+    key: "selection",
+  });
 
   const columnHelper = createColumnHelper<MemberStakeLog>();
 
   useEffect(() => {
     setLoading(true);
-    fetch(`/api/member/${wallet}`)
+    fetch(`/api/member/${wallet}?startDate=${selectionRange.startDate.toISOString().split("T")[0]}&endDate=${
+        selectionRange.endDate.toISOString().split("T")[0]
+      }`)
       .then(res => res.json())
       .then(data => {
         console.log("DASA data", data);
@@ -53,7 +71,7 @@ const MemberDetails: FC<MemberTableProps> = props => {
         setError(err);
         setLoading(false);
       });
-  }, [wallet]);
+  }, [wallet, selectionRange]);
 
   const columns = [
     columnHelper.accessor("total_amount", {
@@ -117,6 +135,25 @@ const MemberDetails: FC<MemberTableProps> = props => {
           <Header />
         </section>
         <section className="max-w-screen m-auto md:max-w-screen items-center flex-col py-10 text-slate-200  w-10/12">
+        <div className="text-center">
+            <div className={`text-center ${showCalendar ? "hidden" : ""}`}>
+              <button
+                className="rounded-md border-2 border-slate-200 p-2 text-black bg-white"
+                type="button"
+                onClick={() => setShowCalendar(!showCalendar)}
+              >
+                Date range: {selectionRange.startDate.toISOString().split("T")[0]} -{" "}
+                {selectionRange.endDate.toISOString().split("T")[0]}
+              </button>
+            </div>
+            <div className={`text-center ${showCalendar ? "" : "hidden"}`}>
+              <DateRangePicker
+                ranges={[selectionRange]}
+                onChange={handleSelect}
+                className="rounded-md border-2 border-slate-200 text-black"
+              />
+            </div>
+          </div>
           <div className="p-2 w-full justify-center items-center flex">
             <LineChart width={900} height={450} data={chartData}>
               <Line type="monotone" dataKey="amount" stroke="#ddd" />

@@ -27,7 +27,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
 async function getMember(req: NextApiRequest, res: NextApiResponse) {
   const query = req.query;
-  const { wallet } = query;
+  const { wallet, startDate, endDate } = query;
   console.log("DASA query", query);
 
   if (!wallet) {
@@ -38,6 +38,8 @@ async function getMember(req: NextApiRequest, res: NextApiResponse) {
     .selectFrom("stake_log")
     .selectAll()
     .where("stake_log.wallet", "=", wallet)
+    .where("created_at", ">=", new Date(startDate! + "T00:00:00.000Z"))
+    .where("created_at", "<=", new Date(endDate! + "T23:59:59.999Z"))
     .orderBy("stake_log.created_at", "asc");
 
   const stake_log = await baseQuery.execute();

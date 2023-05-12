@@ -43,12 +43,6 @@ const MemberDetails: FC<ContractTableProps> = props => {
     console.log(ranges);
     setSelectionRange(ranges.selection);
     setShowCalendar(false);
-    // {
-    //   selection: {
-    //     startDate: [native Date Object],
-    //     endDate: [native Date Object],
-    //   }
-    // }
   };
 
   const [selectionRange, setSelectionRange] = useState({
