@@ -22,6 +22,18 @@ type MemberStakeLog = {
   created_at?: Date;
 };
 
+type MemberInfo = {
+  wallet: string;
+  created_at: Date | undefined;
+  id: number | undefined;
+  amount: string;
+  first_name: string;
+  last_name: string;
+  country: string;
+  email: string;
+  is_active: boolean;
+};
+
 export interface MemberTableProps {
   member?: MemberStakeLog[];
   setOrderByField: (fieldName: string) => void;
@@ -36,9 +48,10 @@ const MemberDetails: FC<MemberTableProps> = props => {
   const { wallet } = router.query;
   console.log(wallet);
   const [data, setData] = useState<MemberStakeLog[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [total, setTotal] = useState(0);
-  const [error, setError] = useState(null);
+  const [memberInfo, setMemberInfo] = useState<MemberInfo | null>(null);
+  const [, setLoading] = useState(false);
+  const [, setTotal] = useState(0);
+  const [, setError] = useState(null);
   const [showCalendar, setShowCalendar] = useState(false);
 
   const handleSelect = (ranges: any) => {
@@ -66,6 +79,7 @@ const MemberDetails: FC<MemberTableProps> = props => {
       .then(data => {
         setData(data.stakeLog);
         setTotal(data.total);
+        setMemberInfo(data.member);
         setLoading(false);
       })
       .catch(err => {
@@ -137,6 +151,13 @@ const MemberDetails: FC<MemberTableProps> = props => {
         </section>
         <section className="max-w-screen m-auto md:max-w-screen items-center flex-col py-10 text-slate-200  w-10/12">
           <h1 className="text-4xl font-extrabold tracking-tight text-white text-center mb-4">{wallet}</h1>
+          <div className="flex flex-col md:flex-row w-full justify-center items-center mb-2">
+            {memberInfo?.first_name} {memberInfo?.last_name}, from {memberInfo?.country} - {memberInfo?.email}
+          </div>
+          <div className="flex flex-col md:flex-row w-full justify-center items-center mb-4">
+            Member since: {memberInfo?.created_at?.toString().split(" ")[0]} - currently&nbsp;
+            <b>{memberInfo?.is_active ? "active" : "inactive"}</b>
+          </div>
           <div className="text-center">
             <div className={`text-center ${showCalendar ? "hidden" : ""}`}>
               <button

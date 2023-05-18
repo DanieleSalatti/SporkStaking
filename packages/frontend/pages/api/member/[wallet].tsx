@@ -33,15 +33,19 @@ async function getMember(req: NextApiRequest, res: NextApiResponse) {
     return res.status(400).json({ message: "Missing wallet", success: false });
   }
 
-  let baseQuery = db
+  const memberInfo = await db.selectFrom("member").selectAll().where("wallet", "=", wallet).executeTakeFirstOrThrow();
+
+  const baseQuery = db
     .selectFrom("stake_log")
     .selectAll()
     .where("stake_log.wallet", "=", wallet)
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     .where("created_at", ">=", new Date(startDate! + "T00:00:00.000Z"))
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     .where("created_at", "<=", new Date(endDate! + "T23:59:59.999Z"))
     .orderBy("stake_log.created_at", "asc");
 
   const stake_log = await baseQuery.execute();
-  
-  res.status(200).json({ success: true, stakeLog: stake_log, total: stake_log.length });
+
+  res.status(200).json({ success: true, stakeLog: stake_log, total: stake_log.length, member: memberInfo });
 }
