@@ -68,9 +68,17 @@ export async function handler() {
 
     const running_total = await db
       .selectFrom("running_totals")
-      .select("amount")
+      .innerJoin("member", "member.wallet", "running_totals.wallet")
+      .select(["running_totals.amount", "member.is_active"])
       .where("wallet", "=", record.wallet)
       .executeTakeFirst();
+
+    if (running_total && !running_total.is_active) {
+      // inactive members should not be included in the running total calculation
+      // but also should not lose their running total
+      console.log("Skipping inactive wallet", record.wallet);
+      continue;
+    }
 
     console.log("🔧 running_total", running_total);
     if (!running_total) {
