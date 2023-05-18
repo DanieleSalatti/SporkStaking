@@ -19,6 +19,18 @@ const db = new Kysely<Database>({
 export async function handler() {
   console.log("🔧 starting bookkeeping function...");
 
+  // if today is April 1st, zero all running totals
+  const today = new Date();
+  if (today.getMonth() == 3 && today.getDate() == 1) {
+    await db
+      .updateTable("running_totals")
+      .set({
+        amount: "0",
+        updated_at: sql`now()`,
+      })
+      .execute();
+  }
+
   const { max } = db.fn;
   // Select only the latest row for each wallet that is at least 24 hours old
   const stake_records = await db
@@ -58,7 +70,7 @@ export async function handler() {
   await db
     .insertInto("contract_running_total")
     .values({
-      amount: total_amount,
+      amount: total_amount.toString(),
     })
     .execute();
 
@@ -87,7 +99,8 @@ export async function handler() {
         .insertInto("running_totals")
         .values({
           wallet: record.wallet,
-          amount: record.total_amount,
+          amount: record.total_amount.toString(),
+          percentage_share: 0, // will be updated later
         })
         .execute();
     } else {
