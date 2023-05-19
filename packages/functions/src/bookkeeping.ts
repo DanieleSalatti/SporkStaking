@@ -82,7 +82,7 @@ export async function handler() {
       .selectFrom("running_totals")
       .innerJoin("member", "member.wallet", "running_totals.wallet")
       .select(["running_totals.amount", "member.is_active"])
-      .where("wallet", "=", record.wallet)
+      .where("running_totals.wallet", "=", record.wallet)
       .executeTakeFirst();
 
     if (running_total && !running_total.is_active) {
