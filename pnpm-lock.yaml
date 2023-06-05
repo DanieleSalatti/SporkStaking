@@ -30,6 +30,107 @@ importers:
       sst: 2.5.2
       vitest: 0.30.1
 
+  packages/dashboard:
+    specifiers:
+      '@aws-sdk/client-rds-data': ^3.328.0
+      '@aws-sdk/types': ^3.342.0
+      '@ethersproject/networks': ^5.7.1
+      '@ethersproject/web': ^5.7.1
+      '@heroicons/react': ^2.0.17
+      '@prisma/client': ^4.11.0
+      '@rainbow-me/rainbowkit': ^0.7.3
+      '@tanstack/react-table': ^8.9.1
+      '@types/node': ^18.11.6
+      '@types/react': ^18.0.23
+      '@types/react-blockies': ^1.4.1
+      '@types/react-copy-to-clipboard': ^5.0.4
+      '@typescript-eslint/eslint-plugin': ^5.41.0
+      '@uniswap/sdk': ^3.0.3
+      autoprefixer: ^10.4.12
+      aws-sdk: ^2.1359.0
+      daisyui: ^2.33.0
+      date-fns: ^2.30.0
+      eslint: ^8.26.0
+      eslint-config-next: ^13.0.0
+      eslint-config-prettier: ^8.5.0
+      eslint-plugin-prettier: ^4.2.1
+      ethers: ^5.7.2
+      framer-motion: ^7.6.2
+      kysely: ^0.24.2
+      kysely-data-api: ^0.2.0
+      next: ^13.0.0
+      next-themes: ^0.2.1
+      notiflix: ^3.2.5
+      postcss: ^8.4.18
+      prettier: ^2.7.1
+      prisma: ^4.11.0
+      react: ^18.2.0
+      react-blockies: ^1.4.1
+      react-copy-to-clipboard: ^5.1.0
+      react-country-region-selector: ^3.6.1
+      react-date-range: ^1.4.0
+      react-dom: ^18.2.0
+      react-icons: ^4.6.0
+      react-social-icons: ^5.15.0
+      recharts: ^2.6.0
+      swr: ^2.1.5
+      tailwindcss: ^3.2.1
+      typescript: ^4.8.4
+      use-debounce: ^8.0.4
+      usehooks-ts: ^2.9.1
+      wagmi: ^0.7.7
+      zustand: ^4.1.3
+    dependencies:
+      '@aws-sdk/client-rds-data': 3.328.0
+      '@aws-sdk/types': 3.342.0
+      '@ethersproject/networks': 5.7.1
+      '@ethersproject/web': 5.7.1
+      '@heroicons/react': 2.0.17_react@18.2.0
+      '@prisma/client': 4.12.0_prisma@4.12.0
+      '@rainbow-me/rainbowkit': 0.7.4_uu2y6qu2ntizkfh5oa6ofjz3du
+      '@tanstack/react-table': 8.9.1_biqbaboplfbrettd7655fr4n2y
+      '@uniswap/sdk': 3.0.3_zrtics2e5rkrh6z22sgcm2anci
+      aws-sdk: 2.1359.0
+      daisyui: 2.51.5_j7yt3jd32cwenjqavrrga47yr4
+      date-fns: 2.30.0
+      ethers: 5.7.2
+      framer-motion: 7.10.3_biqbaboplfbrettd7655fr4n2y
+      kysely: 0.24.2
+      kysely-data-api: 0.2.0_qkssfngffzq5vziwclscxumf34
+      next: 13.3.0_biqbaboplfbrettd7655fr4n2y
+      next-themes: 0.2.1_yucv4tfv7v7nrkw2uguegj6e7e
+      notiflix: 3.2.6
+      prisma: 4.12.0
+      react: 18.2.0
+      react-blockies: 1.4.1_react@18.2.0
+      react-copy-to-clipboard: 5.1.0_react@18.2.0
+      react-country-region-selector: 3.6.1_biqbaboplfbrettd7655fr4n2y
+      react-date-range: 1.4.0_kzhlcyde2l6xjiirkbg7jzhosa
+      react-dom: 18.2.0_react@18.2.0
+      react-icons: 4.8.0_react@18.2.0
+      react-social-icons: 5.15.0_react@18.2.0
+      recharts: 2.6.0_biqbaboplfbrettd7655fr4n2y
+      swr: 2.1.5_react@18.2.0
+      use-debounce: 8.0.4_react@18.2.0
+      usehooks-ts: 2.9.1_biqbaboplfbrettd7655fr4n2y
+      wagmi: 0.7.15_6niq2jm3j2wfrjwac2th7yh3n4
+      zustand: 4.3.7_react@18.2.0
+    devDependencies:
+      '@types/node': 18.15.11
+      '@types/react': 18.0.35
+      '@types/react-blockies': 1.4.1
+      '@types/react-copy-to-clipboard': 5.0.4
+      '@typescript-eslint/eslint-plugin': 5.58.0_ze6bmax3gcsfve3yrzu6npguhe
+      autoprefixer: 10.4.14_postcss@8.4.21
+      eslint: 8.38.0
+      eslint-config-next: 13.3.0_ze6bmax3gcsfve3yrzu6npguhe
+      eslint-config-prettier: 8.8.0_eslint@8.38.0
+      eslint-plugin-prettier: 4.2.1_mrzcadguhkbme6yx3ehduvsjxu
+      postcss: 8.4.21
+      prettier: 2.8.7
+      tailwindcss: 3.3.1_postcss@8.4.21
+      typescript: 4.9.5
+
   packages/frontend:
     specifiers:
       '@aws-sdk/client-rds-data': ^3.328.0
@@ -350,7 +451,7 @@ packages:
       '@aws-crypto/sha256-js': 3.0.0
       '@aws-crypto/supports-web-crypto': 3.0.0
       '@aws-crypto/util': 3.0.0
-      '@aws-sdk/types': 3.310.0
+      '@aws-sdk/types': 3.342.0
       '@aws-sdk/util-locate-window': 3.310.0
       '@aws-sdk/util-utf8-browser': 3.259.0
       tslib: 1.14.1
@@ -359,7 +460,7 @@ packages:
     resolution: {integrity: sha512-PnNN7os0+yd1XvXAy23CFOmTbMaDxgxXtTKHybrJ39Y8kGzBATgBFibWJKH6BhytLI/Zyszs87xCOBNyBig6vQ==}
     dependencies:
       '@aws-crypto/util': 3.0.0
-      '@aws-sdk/types': 3.310.0
+      '@aws-sdk/types': 3.342.0
       tslib: 1.14.1
 
   /@aws-crypto/supports-web-crypto/3.0.0:
@@ -370,7 +471,7 @@ packages:
   /@aws-crypto/util/3.0.0:
     resolution: {integrity: sha512-2OJlpeJpCR48CC8r+uKVChzs9Iungj9wkZrl8Z041DWEWvyIHILYKCPNzJghKsivj+S3mLo6BVc7mBNzdxA46w==}
     dependencies:
-      '@aws-sdk/types': 3.310.0
+      '@aws-sdk/types': 3.342.0
       '@aws-sdk/util-utf8-browser': 3.259.0
       tslib: 1.14.1
 
@@ -1698,6 +1799,12 @@ packages:
 
   /@aws-sdk/types/3.310.0:
     resolution: {integrity: sha512-j8eamQJ7YcIhw7fneUfs8LYl3t01k4uHi4ZDmNRgtbmbmTTG3FZc2MotStZnp3nZB6vLiPF1o5aoJxWVvkzS6A==}
+    engines: {node: '>=14.0.0'}
+    dependencies:
+      tslib: 2.5.0
+
+  /@aws-sdk/types/3.342.0:
+    resolution: {integrity: sha512-5uyXVda/AgUpdZNJ9JPHxwyxr08miPiZ/CKSMcRdQVjcNnrdzY9m/iM9LvnQT44sQO+IEEkF2IoZIWvZcq199A==}
     engines: {node: '>=14.0.0'}
     dependencies:
       tslib: 2.5.0
@@ -5264,7 +5371,7 @@ packages:
   /axios/0.21.4_debug@4.3.4:
     resolution: {integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==}
     dependencies:
-      follow-redirects: 1.15.2
+      follow-redirects: 1.15.2_debug@4.3.4
     transitivePeerDependencies:
       - debug
     dev: true
@@ -5272,7 +5379,7 @@ packages:
   /axios/0.24.0:
     resolution: {integrity: sha512-Q6cWsys88HoPgAaFAVUb0WpPk0O8iTeisR9IMqy9G8AbO4NlpVknrnQS03zzF9PGAWgO3cgletO3VjV/P7VztA==}
     dependencies:
-      follow-redirects: 1.15.2
+      follow-redirects: 1.15.2_debug@4.3.4
     transitivePeerDependencies:
       - debug
     dev: true
@@ -5280,7 +5387,7 @@ packages:
   /axios/0.26.1:
     resolution: {integrity: sha512-fPwcX4EvnSHuInCMItEhAGnaSEXRBjtzh9fOtsE6E1G6p7vl7edEeZe11QHf18+6+9gR5PbKV/sGKNaD8YaMeA==}
     dependencies:
-      follow-redirects: 1.15.2
+      follow-redirects: 1.15.2_debug@4.3.4
     transitivePeerDependencies:
       - debug
     dev: false
@@ -7795,6 +7902,7 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
+    dev: false
 
   /follow-redirects/1.15.2_debug@4.3.4:
     resolution: {integrity: sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==}
@@ -7806,7 +7914,6 @@ packages:
         optional: true
     dependencies:
       debug: 4.3.4
-    dev: true
 
   /for-each/0.3.3:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}
@@ -9882,7 +9989,7 @@ packages:
       duplexify: 4.1.2
       help-me: 3.0.0
       inherits: 2.0.4
-      minimist: 1.2.6
+      minimist: 1.2.8
       mqtt-packet: 6.10.0
       pump: 3.0.0
       readable-stream: 3.6.2

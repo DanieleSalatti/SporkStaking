@@ -1,5 +1,5 @@
 {
-  "name": "@se-2/frontend",
+  "name": "@se-2/dashboard",
   "private": true,
   "version": "0.1.0",
   "scripts": {
@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-rds-data": "^3.328.0",
+    "@aws-sdk/types": "^3.342.0",
     "@ethersproject/networks": "^5.7.1",
     "@ethersproject/web": "^5.7.1",
     "@heroicons/react": "^2.0.17",
