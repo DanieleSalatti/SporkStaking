@@ -1,11 +1,12 @@
 {
-  "name": "SporkStakingSST",
+  "name": "sporkstakingsst",
   "version": "0.0.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "sst dev",
     "frontend": "pnpm --filter frontend dev",
+    "dashboard": "pnpm --filter dashboard dev",
     "db:push": "pnpm --filter frontend db:push",
     "build": "sst build",
     "deploy": "sst deploy",

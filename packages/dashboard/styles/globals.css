@@ -1,0 +1,40 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family:  Montserrat, sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin-bottom: 0.5rem;
+  line-height: 1;
+}
+
+p {
+  margin: 1rem 0;
+}
+
+
+.bg-spork {
+  background: url('../assets/sporkk.png');
+  background-position: left;
+  background-size: contain;
+  opacity: 0.5;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+
+@layer components{
+  .stakeButton {
+      @apply px-5 py-3 my-6 text-white bg-[#392E75] rounded hover:bg-[#8D52FF] tracking-widest uppercase disabled:opacity-50 text-center
+  }
+
+}

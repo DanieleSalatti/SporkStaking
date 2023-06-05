@@ -61,6 +61,16 @@ export function StakingStack({ stack }: StackContext) {
     },
   });
 
+  const dashboard = new NextjsSite(stack, "Dashboard", {
+    path: "packages/dashboard",
+    // customDomain: stack.stage === "prod" ? "custom-domain.com" : undefined,
+    bind: [cluster],
+    edge: false,
+    environment: {
+      DB_HOST: cluster.clusterIdentifier,
+    },
+  });
+
   /*
    * Cron Job
    * This is where we'll run the bookkeeping function
@@ -79,7 +89,8 @@ export function StakingStack({ stack }: StackContext) {
   });
 
   stack.addOutputs({
-    URL: site.url,
+    SITE_URL: site.url,
+    DASH_URL: dashboard.url,
     DATABASE:
       cluster.clusterEndpoint.hostname + ":" + cluster.clusterEndpoint.port,
     DATABASE_SOCKET: cluster.clusterEndpoint.socketAddress,
