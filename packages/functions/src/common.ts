@@ -21,6 +21,13 @@ export interface Database {
     percentage_share: number;
     updated_at?: Date;
   };
+  running_totals_snapshot: {
+    wallet: string;
+    amount: string;
+    percentage_share: number;
+    fiscal_year: number;
+    updated_at?: Date;
+  };
   contract_running_total: {
     amount: string;
     created_at?: Date;
