@@ -2,13 +2,16 @@ import { DeployFunction } from "hardhat-deploy/types";
 import { THardhatRuntimeEnvironmentExtended } from "helpers/types/THardhatRuntimeEnvironmentExtended";
 
 import { TestSPORK } from "~common/generated/contract-types";
+const { ethers, upgrades } = require("hardhat");
 
 const func: DeployFunction = async (
   hre: THardhatRuntimeEnvironmentExtended
 ) => {
-  const { getNamedAccounts, deployments } = hre;
-  const { deploy } = deployments;
+  const { getNamedAccounts } = hre;
   const { deployer } = await getNamedAccounts();
+
+  // Get the Contract Factory
+  const SporkStaker = await ethers.getContractFactory("SporkStaker");
 
   // TODO: check chain id and use the correct address
   const chainId = await hre.getChainId();
@@ -21,7 +24,7 @@ const func: DeployFunction = async (
 
   const StakedSPORK = await ethers.getContract("StakedSPORK", deployer);
 
-  const staker = await deploy("SporkStaker", {
+  const staker = await upgrades.deployProxy(SporkStaker, {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
     args: [sporkAddress, StakedSPORK.address],
@@ -34,12 +37,3 @@ const func: DeployFunction = async (
 };
 export default func;
 func.tags = ["SporkStaker"];
-
-/*
-Tenderly verification
-let verification = await tenderly.verify({
-  name: contractName,
-  address: contractAddress,
-  network: targetNetwork,
-});
-*/

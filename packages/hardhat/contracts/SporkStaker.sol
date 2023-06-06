@@ -4,22 +4,24 @@ pragma solidity ^0.8.19;
 import "hardhat/console.sol";
 import "./interfaces/IERC20MintableBurnable.sol";
 import "@openzeppelin/contracts/interfaces/IERC20.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 error INVALID_AMOUNT();
 
-contract SporkStaker is ReentrancyGuard {
+contract SporkStaker is Initializable, ReentrancyGuardUpgradeable {
 
-  IERC20 public immutable sporkToken;
-  IERC20MintableBurnable public immutable stakedSporkToken;
+  IERC20 public sporkToken;
+  IERC20MintableBurnable public stakedSporkToken;
 
   event Staked(address indexed user, uint256 amount);
   event Unstaked(address indexed user, uint256 amount);
 
-  constructor(
+  function initialize(
     address _sporkToken,
     address _stakedSporkToken
-  ) {
+  ) public initializer {
+    __ReentrancyGuard_init();
     sporkToken = IERC20(_sporkToken);
     stakedSporkToken = IERC20MintableBurnable(_stakedSporkToken);
   }

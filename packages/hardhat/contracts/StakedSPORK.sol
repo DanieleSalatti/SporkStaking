@@ -1,17 +1,22 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
-import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20BurnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 error TRANSFER_NOT_ALLOWED();
 
-contract StakedSPORK is ERC20, ERC20Burnable, AccessControl {
+contract StakedSPORK is Initializable, ERC20Upgradeable, ERC20BurnableUpgradeable, AccessControlUpgradeable {
   bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
-  constructor() ERC20("Staked SPORK", "sSPORK") {
-    _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
+  function initialize() public initializer {
+    __ERC20_init("Staked SPORK", "sSPORK");
+    __AccessControl_init();
+    __ERC20Burnable_init();
+    
+    _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
   }
 
   function mint(address to, uint256 amount) public onlyRole(MINTER_ROLE) {
@@ -19,7 +24,7 @@ contract StakedSPORK is ERC20, ERC20Burnable, AccessControl {
   }
 
   function addMinter(address minter) public onlyRole(DEFAULT_ADMIN_ROLE) {
-    _grantRole(MINTER_ROLE, minter);
+    _setupRole(MINTER_ROLE, minter);
   }
 
   function _beforeTokenTransfer(

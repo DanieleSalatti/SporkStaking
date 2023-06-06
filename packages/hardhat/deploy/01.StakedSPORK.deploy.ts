@@ -1,25 +1,19 @@
 import { DeployFunction } from "hardhat-deploy/types";
 import { THardhatRuntimeEnvironmentExtended } from "helpers/types/THardhatRuntimeEnvironmentExtended";
+const { ethers, upgrades } = require("hardhat");
 
 const func: DeployFunction = async (
   hre: THardhatRuntimeEnvironmentExtended
 ) => {
-  const { getNamedAccounts, deployments } = hre;
-  const { deploy } = deployments;
+  const { getNamedAccounts } = hre;
   const { deployer } = await getNamedAccounts();
-  await deploy("StakedSPORK", {
+
+  const StakedSPORK = await ethers.getContractFactory("StakedSPORK");
+
+  await upgrades.deploy(StakedSPORK, {
     from: deployer,
     log: true,
   });
 };
 export default func;
 func.tags = ["StakedSPORK"];
-
-/*
-Tenderly verification
-let verification = await tenderly.verify({
-  name: contractName,
-  address: contractAddress,
-  network: targetNetwork,
-});
-*/
