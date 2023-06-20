@@ -96,7 +96,8 @@ export async function handler(event: SQSEvent) {
           is_active: true,
         })
         .executeTakeFirstOrThrow();
-      console.log("✅ Done!", newMember.insertId);
+      console.log("✅ Member created!", newMember.insertId);
+      console.log("✅ Done!");
       return {};
     }
 

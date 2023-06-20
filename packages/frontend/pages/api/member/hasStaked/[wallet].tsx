@@ -27,26 +27,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
 async function getMember(req: NextApiRequest, res: NextApiResponse) {
   const query = req.query;
-  const { wallet, startDate, endDate } = query;
+  const { wallet } = query;
 
   if (!wallet) {
     return res.status(400).json({ message: "Missing wallet", success: false });
   }
 
-  const memberInfo = await db.selectFrom("member").selectAll().where("wallet", "=", wallet).execute();
-
-  const baseQuery = db.selectFrom("stake_log").selectAll().where("stake_log.wallet", "=", wallet);
-  if (startDate) {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    baseQuery.where("created_at", ">=", new Date(startDate! + "T00:00:00.000Z"));
-  }
-  if (endDate) {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    baseQuery.where("created_at", "<=", new Date(endDate! + "T23:59:59.999Z"));
-  }
-  baseQuery.orderBy("stake_log.created_at", "asc");
+  const baseQuery = db.selectFrom("stake_log").selectAll().where("wallet", "=", wallet);
 
   const stake_log = await baseQuery.execute();
 
-  res.status(200).json({ success: true, stakeLog: stake_log, total: stake_log.length, member: memberInfo });
+  res.status(200).json({ success: true, exists: stake_log.length > 0 });
 }

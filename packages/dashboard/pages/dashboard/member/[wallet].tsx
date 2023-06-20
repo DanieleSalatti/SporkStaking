@@ -80,10 +80,11 @@ const MemberDetails: FC<MemberTableProps> = props => {
         setData(data.stakeLog);
         setTotal(data.total);
         setMemberInfo(data.member);
-        setLoading(false);
       })
       .catch(err => {
         setError(err);
+      })
+      .finally(() => {
         setLoading(false);
       });
   }, [wallet, selectionRange]);

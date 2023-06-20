@@ -75,7 +75,7 @@ async function getMembers(req: NextApiRequest, res: NextApiResponse) {
       "running_totals.amount",
       "running_totals.percentage_share",
     ])
-    .where("member.is_active", "=", true)
+    .where("member.is_active", "=", true);
 
   if (wallet && wallet !== "") {
     baseQuery = baseQuery.where("member.wallet", "like", "%" + wallet + "%");

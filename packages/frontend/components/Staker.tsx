@@ -35,8 +35,24 @@ export const Staker: FC<IStakerProps> = props => {
   const [lastName, setLastName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [country, setCountry] = useState<string>("");
+  const [showForm, setShowForm] = useState<boolean>(true);
 
   const { chain } = useNetwork();
+
+  useEffect(() => {
+    fetch(`/api/member/hasStaked/${address}`)
+      .then(res => res.json())
+      .then(data => {
+        console.log("DASA", data);
+        if (data.exists) {
+          console.log("DASA member found");
+          setShowForm(false);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }, [address]);
 
   const handleSubmit = async (block_number: number) => {
     const body = {
@@ -324,7 +340,7 @@ export const Staker: FC<IStakerProps> = props => {
 
               {member && (
                 <div className="flex flex-col">
-                  <div className={`${!member ? "hidden" : ""}`}>
+                  <div className={`${!showForm ? "hidden" : ""}`}>
                     <div className="flex flex-col pt-5">
                       <label htmlFor="sporkToStake" className="text-xs text-left uppercase  text-gray-500">
                         First Name
