@@ -1,3 +1,4 @@
+import { deployments } from "hardhat";
 import { DeployFunction } from "hardhat-deploy/types";
 import { THardhatRuntimeEnvironmentExtended } from "helpers/types/THardhatRuntimeEnvironmentExtended";
 
@@ -10,6 +11,7 @@ const func: DeployFunction = async (
   const { getNamedAccounts } = hre;
   const { deployer } = await getNamedAccounts();
 
+  const { get } = deployments;
   // Get the Contract Factory
   const SporkStaker = await ethers.getContractFactory("SporkStaker");
 
@@ -22,18 +24,36 @@ const func: DeployFunction = async (
     sporkAddress = SPORK.address;
   }
 
-  const StakedSPORK = await ethers.getContract("StakedSPORK", deployer);
+  const sspork = await get("StakedSPORK");
 
-  const staker = await upgrades.deployProxy(SporkStaker, {
-    // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
-    from: deployer,
-    args: [sporkAddress, StakedSPORK.address],
-    log: true,
-  });
+  /*
+  const StakedSPORK = await ethers.getContractAt(
+    "StakedSPORK",
+    sspork.address,
+    deployer
+  ); 
+  */
+
+  const StakedSPORKFactory = await ethers.getContractFactory("StakedSPORK");
+
+  const StakedSPORK = StakedSPORKFactory.attach(sspork.address);
+
+  const staker = await upgrades.deployProxy(
+    SporkStaker,
+    [sporkAddress, StakedSPORK.address],
+    {
+      // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
+      from: deployer,
+      initializer: "initialize",
+      log: true,
+    }
+  );
+
+  await staker.deployed();
+
+  console.log("SporkStaker deployed to:", staker.address);
 
   await StakedSPORK.addMinter(staker.address);
-
-  const StakerInstance = await ethers.getContract("SporkStaker", deployer);
 };
 export default func;
 func.tags = ["SporkStaker"];

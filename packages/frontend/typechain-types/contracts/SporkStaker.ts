@@ -29,6 +29,7 @@ import type {
 
 export interface SporkStakerInterface extends utils.Interface {
   functions: {
+    "initialize(address,address)": FunctionFragment;
     "sporkToken()": FunctionFragment;
     "stake(uint256)": FunctionFragment;
     "stakedSporkToken()": FunctionFragment;
@@ -37,12 +38,17 @@ export interface SporkStakerInterface extends utils.Interface {
 
   getFunction(
     nameOrSignatureOrTopic:
+      | "initialize"
       | "sporkToken"
       | "stake"
       | "stakedSporkToken"
       | "unstake"
   ): FunctionFragment;
 
+  encodeFunctionData(
+    functionFragment: "initialize",
+    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+  ): string;
   encodeFunctionData(
     functionFragment: "sporkToken",
     values?: undefined
@@ -60,6 +66,7 @@ export interface SporkStakerInterface extends utils.Interface {
     values: [PromiseOrValue<BigNumberish>]
   ): string;
 
+  decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "sporkToken", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "stake", data: BytesLike): Result;
   decodeFunctionResult(
@@ -69,13 +76,22 @@ export interface SporkStakerInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "unstake", data: BytesLike): Result;
 
   events: {
+    "Initialized(uint8)": EventFragment;
     "Staked(address,uint256)": EventFragment;
     "Unstaked(address,uint256)": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Staked"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Unstaked"): EventFragment;
 }
+
+export interface InitializedEventObject {
+  version: number;
+}
+export type InitializedEvent = TypedEvent<[number], InitializedEventObject>;
+
+export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
 
 export interface StakedEventObject {
   user: string;
@@ -123,6 +139,12 @@ export interface SporkStaker extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    initialize(
+      _sporkToken: PromiseOrValue<string>,
+      _stakedSporkToken: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     sporkToken(overrides?: CallOverrides): Promise<[string]>;
 
     stake(
@@ -137,6 +159,12 @@ export interface SporkStaker extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
+
+  initialize(
+    _sporkToken: PromiseOrValue<string>,
+    _stakedSporkToken: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
 
   sporkToken(overrides?: CallOverrides): Promise<string>;
 
@@ -153,6 +181,12 @@ export interface SporkStaker extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    initialize(
+      _sporkToken: PromiseOrValue<string>,
+      _stakedSporkToken: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     sporkToken(overrides?: CallOverrides): Promise<string>;
 
     stake(
@@ -169,6 +203,9 @@ export interface SporkStaker extends BaseContract {
   };
 
   filters: {
+    "Initialized(uint8)"(version?: null): InitializedEventFilter;
+    Initialized(version?: null): InitializedEventFilter;
+
     "Staked(address,uint256)"(
       user?: PromiseOrValue<string> | null,
       amount?: null
@@ -189,6 +226,12 @@ export interface SporkStaker extends BaseContract {
   };
 
   estimateGas: {
+    initialize(
+      _sporkToken: PromiseOrValue<string>,
+      _stakedSporkToken: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     sporkToken(overrides?: CallOverrides): Promise<BigNumber>;
 
     stake(
@@ -205,6 +248,12 @@ export interface SporkStaker extends BaseContract {
   };
 
   populateTransaction: {
+    initialize(
+      _sporkToken: PromiseOrValue<string>,
+      _stakedSporkToken: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
     sporkToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     stake(
