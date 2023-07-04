@@ -1,13 +1,15 @@
 import type { NextPage } from "next";
-import Head from "next/head";
 import { useEffect, useState } from "react";
+import "react-date-range/dist/styles.css"; // main style file
+import "react-date-range/dist/theme/default.css"; // theme css file
+import { Config } from "sst/node/config";
+import { useAccount } from "wagmi";
 import Footer from "~~/components/Footer";
+import GateStatus from "~~/components/GateStatus";
+import CustomHead from "~~/components/Head";
 import Header from "~~/components/Header";
 import { MemberTable } from "~~/components/MemberTable";
 import { TAutoConnect, useAutoConnect } from "~~/hooks/scaffold-eth/useAutoConnect";
-import { DateRangePicker } from 'react-date-range';
-import 'react-date-range/dist/styles.css'; // main style file
-import 'react-date-range/dist/theme/default.css'; // theme css file
 
 // todo: move this later scaffold config.  See TAutoConnect for comments on each prop
 const tempAutoConnectConfig: TAutoConnect = {
@@ -15,7 +17,20 @@ const tempAutoConnectConfig: TAutoConnect = {
   autoConnect: true,
 };
 
-const Dashboard: NextPage = () => {
+export async function getServerSideProps() {
+  console.log(Config.NEXT_PUBLIC_WHITELISTED_ADDRESSES);
+
+  return { props: { loaded: true, whitelist: Config.NEXT_PUBLIC_WHITELISTED_ADDRESSES.split(",") } };
+}
+
+interface Props {
+  whitelist: string[];
+  loaded: boolean;
+}
+
+const Dashboard: NextPage<Props> = (props: Props) => {
+  const { whitelist, loaded } = props;
+
   useAutoConnect(tempAutoConnectConfig);
   const [filterWallet, setFilterWallet] = useState<string>("");
 
@@ -29,6 +44,10 @@ const Dashboard: NextPage = () => {
   const [pageCount, setPageCount] = useState(0);
   const [orderByField, setOrderByField] = useState("last_name");
   const [orderByDirection, setOrderByDirection] = useState("asc");
+
+  const { address, isConnected } = useAccount();
+
+  console.log("DASA whitelist", whitelist);
 
   useEffect(() => {
     setLoading(true);
@@ -51,36 +70,23 @@ const Dashboard: NextPage = () => {
   if (error) return <div>Failed to load</div>;
   if (!data) return <div>Loading...</div>;
 
+  if (!isConnected || !address) {
+    // ask user to connect using the navbar
+    return <GateStatus status="not_connected" />;
+  }
+  if (isConnected) {
+    if (!loaded) {
+      return <GateStatus status="loading" />;
+    }
+    // check if address is whitelisted
+    if (!whitelist.includes(address)) {
+      return <GateStatus status="not_allowed" />;
+    }
+  }
+
   return (
     <div className="max-w-screen bg-gradient-to-r from-[#392E75] via-black to-black h-full">
-      <Head>
-        <title>SporkDAO $SPORK Staking App</title>
-        <meta name="description" content="SPORK staker created with 🏗 scaffold-eth" />
-        <link
-          rel="icon"
-          type="image/x-icon"
-          href="https://images.squarespace-cdn.com/content/v1/614b990e002ad146a5478e8b/244c7b82-0ee2-45ea-830f-50c450ed2985/favicon.ico?format=100w"
-        ></link>
-        <link
-          rel="shortcut icon"
-          type="image/x-icon"
-          href="https://images.squarespace-cdn.com/content/v1/614b990e002ad146a5478e8b/244c7b82-0ee2-45ea-830f-50c450ed2985/favicon.ico?format=100w"
-        ></link>
-        <link rel="canonical" href="https://stake.ethdenver.com" />
-        <meta property="og:site_name" content="SporkDAO Spork Staking App"></meta>
-        <meta
-          property="og:image"
-          content="https://images.squarespace-cdn.com/content/v1/614b990e002ad146a5478e8b/1658775809172-JATIARTTTVEO3ZN5KDVW/SPORKDAO_LOVE.png?format=300w"
-        ></meta>
-        <meta
-          name="twitter:image"
-          content="https://images.squarespace-cdn.com/content/v1/614b990e002ad146a5478e8b/1658775809172-JATIARTTTVEO3ZN5KDVW/SPORKDAO_LOVE.png?format=300w"
-        ></meta>
-        <meta name="twitter:url" content="https://stake.ethdenver.com"></meta>
-        <meta name="twitter:card" content="summary"></meta>
-        <meta name="twitter:description" content="SporkDAO members can stake and unstake their spork here!"></meta>
-        <meta name="description" content="SporkDAO members can stake and unstake their spork here!"></meta>
-      </Head>
+      <CustomHead />
       <main className="flex flex-col">
         <section>
           <Header />
@@ -98,7 +104,8 @@ const Dashboard: NextPage = () => {
             />
           </div>
           <div className="mt-4">
-            {data && data.length > 0 ? (
+            {isLoading && <div className="text-center">Loading...</div>}
+            {data && data.length > 0 && (
               <MemberTable
                 members={data}
                 orderByField={orderByField}
@@ -106,9 +113,8 @@ const Dashboard: NextPage = () => {
                 orderByDirection={orderByDirection}
                 setOrderByDirection={setOrderByDirection}
               />
-            ) : (
-              <p>No data to display.</p>
             )}
+            {!isLoading && data && data.length === 0 && <div className="text-center">No data to display.</div>}
             <div className="flex items-center gap-2 justify-center mt-8">
               <button className="border rounded p-1" onClick={() => setPageIndex(0)} disabled={pageIndex === 0}>
                 {"<<"}

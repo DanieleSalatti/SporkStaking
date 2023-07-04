@@ -6,7 +6,10 @@ import { DateRangePicker } from "react-date-range";
 import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css"; // theme css file
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
+import { Config } from "sst/node/config";
+import { useAccount } from "wagmi";
 import Footer from "~~/components/Footer";
+import GateStatus from "~~/components/GateStatus";
 import Header from "~~/components/Header";
 import { TAutoConnect, useAutoConnect } from "~~/hooks/scaffold-eth/useAutoConnect";
 
@@ -34,16 +37,27 @@ type MemberInfo = {
   is_active: boolean;
 };
 
+export async function getServerSideProps() {
+  console.log(Config.NEXT_PUBLIC_WHITELISTED_ADDRESSES);
+
+  return { props: { loaded: true, whitelist: Config.NEXT_PUBLIC_WHITELISTED_ADDRESSES.split(",") } };
+}
+
 export interface MemberTableProps {
   member?: MemberStakeLog[];
   setOrderByField: (fieldName: string) => void;
   setOrderByDirection: (direction: string) => void;
   orderByField: string;
   orderByDirection: string;
+  whitelist: string[];
+  loaded: boolean;
 }
 
 const MemberDetails: FC<MemberTableProps> = props => {
   useAutoConnect(tempAutoConnectConfig);
+  const { whitelist, loaded } = props;
+  const { address, isConnected } = useAccount();
+
   const router = useRouter();
   const { wallet } = router.query;
   console.log(wallet);
@@ -115,6 +129,20 @@ const MemberDetails: FC<MemberTableProps> = props => {
       amount: d.total_amount,
     };
   });
+
+  if (!isConnected || !address) {
+    // ask user to connect using the navbar
+    return <GateStatus status="not_connected" />;
+  }
+  if (isConnected) {
+    if (!loaded) {
+      return <GateStatus status="loading" />;
+    }
+    // check if address is whitelisted
+    if (!whitelist.includes(address)) {
+      return <GateStatus status="not_allowed" />;
+    }
+  }
 
   return (
     <div className="max-w-screen bg-gradient-to-r from-[#392E75] via-black to-black h-full">

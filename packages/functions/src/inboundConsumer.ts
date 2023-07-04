@@ -5,6 +5,7 @@ import { formatEther } from "ethers/lib/utils";
 import { Kysely } from "kysely";
 import { DataApiDialect } from "kysely-data-api";
 import fetch, { RequestInit } from "node-fetch";
+import { Config } from "sst/node/config";
 import { RDS } from "sst/node/rds";
 import { Database } from "./common";
 
@@ -31,7 +32,7 @@ export async function handler(event: SQSEvent) {
     const message = JSON.parse(record.body);
     console.log("💌 Processing message", message);
 
-    const fetchURL = `https://polygon-mainnet.g.alchemy.com/v2/${process.env.POLYGON_ALCHEMY_KEY}`;
+    const fetchURL = `https://polygon-mainnet.g.alchemy.com/v2/${Config.POLYGON_ALCHEMY_KEY}`;
 
     var raw = JSON.stringify({
       jsonrpc: "2.0",
@@ -39,7 +40,7 @@ export async function handler(event: SQSEvent) {
       headers: {
         "Content-Type": "application/json",
       },
-      params: [`${message.wallet}`, [`${process.env.SSPORK_ADDRESS!}`]],
+      params: [`${message.wallet}`, [`${Config.SSPORK_ADDRESS!}`]],
       id: 42,
     });
 

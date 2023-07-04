@@ -1,7 +1,22 @@
-import { Cron, NextjsSite, Queue, RDS, StackContext } from "sst/constructs";
+import {
+  Config,
+  Cron,
+  NextjsSite,
+  Queue,
+  RDS,
+  StackContext,
+} from "sst/constructs";
 
 export function StakingStack({ stack }: StackContext) {
   const DATABASE = "SporkStaking";
+
+  // https://docs.sst.dev/config
+  const POLYGON_ALCHEMY_KEY = new Config.Secret(stack, "POLYGON_ALCHEMY_KEY");
+  const SSPORK_ADDRESS = new Config.Secret(stack, "SSPORK_ADDRESS");
+  const NEXT_PUBLIC_WHITELISTED_ADDRESSES = new Config.Secret(
+    stack,
+    "NEXT_PUBLIC_WHITELISTED_ADDRESSES"
+  );
 
   /*
    * RDS Cluster
@@ -33,11 +48,13 @@ export function StakingStack({ stack }: StackContext) {
     consumer: {
       function: {
         handler: "packages/functions/src/inboundConsumer.handler",
-        bind: [cluster],
+        bind: [cluster, POLYGON_ALCHEMY_KEY, SSPORK_ADDRESS],
+        /*
         environment: {
-          POLYGON_ALCHEMY_KEY: "lQLpodoMvP1mGHFY01myNQ6JiXklUNIx",
-          SSPORK_ADDRESS: "0x3e356BC667DA320824b9AF5eC5B5ce3edaEbF754",
+          POLYGON_ALCHEMY_KEY: process.env.POLYGON_ALCHEMY_KEY!,
+          SSPORK_ADDRESS: process.env.SSPORK_ADDRESS!,
         },
+        */
       },
       cdk: {
         eventSource: {
@@ -64,7 +81,7 @@ export function StakingStack({ stack }: StackContext) {
   const dashboard = new NextjsSite(stack, "Dashboard", {
     path: "packages/dashboard",
     // customDomain: stack.stage === "prod" ? "custom-domain.com" : undefined,
-    bind: [cluster],
+    bind: [cluster, NEXT_PUBLIC_WHITELISTED_ADDRESSES],
     edge: false,
     environment: {
       DB_HOST: cluster.clusterIdentifier,

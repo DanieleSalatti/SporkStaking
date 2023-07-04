@@ -1,12 +1,14 @@
 import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import Head from "next/head";
-import { useRouter } from "next/router";
 import { FC, useEffect, useState } from "react";
 import { DateRangePicker } from "react-date-range";
 import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css"; // theme css file
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
+import { Config } from "sst/node/config";
+import { useAccount } from "wagmi";
 import Footer from "~~/components/Footer";
+import GateStatus from "~~/components/GateStatus";
 import Header from "~~/components/Header";
 import { TAutoConnect, useAutoConnect } from "~~/hooks/scaffold-eth/useAutoConnect";
 
@@ -21,17 +23,27 @@ type ContractLog = {
   created_at?: Date;
 };
 
+export async function getServerSideProps() {
+  console.log(Config.NEXT_PUBLIC_WHITELISTED_ADDRESSES);
+
+  return { props: { loaded: true, whitelist: Config.NEXT_PUBLIC_WHITELISTED_ADDRESSES.split(",") } };
+}
+
 export interface ContractTableProps {
   contract?: ContractLog[];
   setOrderByField: (fieldName: string) => void;
   setOrderByDirection: (direction: string) => void;
   orderByField: string;
   orderByDirection: string;
+  whitelist: string[];
+  loaded: boolean;
 }
 
 const MemberDetails: FC<ContractTableProps> = props => {
   useAutoConnect(tempAutoConnectConfig);
-  const router = useRouter();
+  const { whitelist, loaded } = props;
+  const { address, isConnected } = useAccount();
+
   const [data, setData] = useState<ContractLog[]>([]);
   const [loading, setLoading] = useState(false);
   const [total, setTotal] = useState(0);
@@ -98,6 +110,20 @@ const MemberDetails: FC<ContractTableProps> = props => {
       amount: d.amount,
     };
   });
+
+  if (!isConnected || !address) {
+    // ask user to connect using the navbar
+    return <GateStatus status="not_connected" />;
+  }
+  if (isConnected) {
+    if (!loaded) {
+      return <GateStatus status="loading" />;
+    }
+    // check if address is whitelisted
+    if (!whitelist.includes(address)) {
+      return <GateStatus status="not_allowed" />;
+    }
+  }
 
   return (
     <div className="max-w-screen bg-gradient-to-r from-[#392E75] via-black to-black h-full">
