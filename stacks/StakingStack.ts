@@ -69,7 +69,7 @@ export function StakingStack({ stack }: StackContext) {
    */
   const site = new NextjsSite(stack, "Site", {
     path: "packages/frontend",
-    // customDomain: stack.stage === "prod" ? "custom-domain.com" : undefined,
+    customDomain: stack.stage === "prod" ? "stake.bufficorn.net" : undefined,
     bind: [inboundQueue, cluster],
     edge: false,
     environment: {
@@ -80,7 +80,7 @@ export function StakingStack({ stack }: StackContext) {
 
   const dashboard = new NextjsSite(stack, "Dashboard", {
     path: "packages/dashboard",
-    // customDomain: stack.stage === "prod" ? "custom-domain.com" : undefined,
+    customDomain: stack.stage === "prod" ? "dash.bufficorn.net" : undefined,
     bind: [cluster, NEXT_PUBLIC_WHITELISTED_ADDRESSES],
     edge: false,
     environment: {

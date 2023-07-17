@@ -3,13 +3,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { FC, useState } from "react";
 import { CgDollar } from "react-icons/cg";
-import { useAccount, useNetwork } from "wagmi";
+import { useAccount } from "wagmi";
 import sporkk from "../assets/sporkk.png";
 import { AddressViewer, Faucet } from "../components/scaffold-eth";
 import { Staker } from "./Staker";
 
 const MainCard: FC = () => {
-  const { chain } = useNetwork();
+  // const { chain } = useNetwork();
 
   /*
   const sporkAddress =

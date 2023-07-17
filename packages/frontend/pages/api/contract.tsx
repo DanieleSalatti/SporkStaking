@@ -29,7 +29,7 @@ async function getContractLog(req: NextApiRequest, res: NextApiResponse) {
   const query = req.query;
   const { startDate, endDate } = query;
 
-  let baseQuery = db
+  const baseQuery = db
     .selectFrom("contract_running_total")
     .selectAll()
     .where("created_at", ">=", new Date(startDate! + "T00:00:00.000Z"))
